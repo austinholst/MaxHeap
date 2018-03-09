@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <cstring>
 #include <cmath>
+#include <stdio.h>
 
 using namespace std;
 
@@ -14,40 +15,47 @@ void printTree(Node* head, int space);
 int main() {
   Node* nodeArray[100];  
   char input[200];
+  char answer[20];
   int* numbers = new int[200];
   int counter = 0;
   Node* head = new Node(NULL);
   
-  cout << "Input all of the numbers you want in the heap" << endl;
-  cin.get(input, 200);
+  cout << "Would you like to input numbers via 'file', or 'manually'?" << endl;
+  cin.get(answer, 20);
 
-  //Putting the numbers in an int array
-  for(int i = 0; i < strlen(input); i++) {
-    int start = i;
-    int length = 1;
-    while(input[i + 1] != char(32) && i < strlen(input)) {
-      length++;
-      i++;
+  if(strcmp(answer, "manually") == 0) {
+    //Putting the numbers in an int array
+    for(int i = 0; i < strlen(input); i++) {
+      int start = i;
+      int length = 1;
+      while(input[i + 1] != char(32) && i < strlen(input)) {
+	length++;
+	i++;
+      }
+      char* charNum = new char[length];
+      for(int j = 0; j < length; j++) {
+	charNum[j] = input[start + j];
+      }
+      numbers[counter] = atoi(charNum);
+      counter++;
     }
-    char* charNum = new char[length];
-    for(int j = 0; j < length; j++) {
-      charNum[j] = input[start + j];
+    nodeArray[0] = NULL;
+
+    //Putting the number into a node and the node into an array of nodes
+    for(int i = 0; i < counter; i++) {
+      Node* newNode = new Node(numbers[i]);
+      counter++;
     }
-    numbers[counter] = atoi(charNum);
-    counter++;
+    treeBuild(head, nodeArray, counter);
+    printTree(head, 0);
+    remove(head, nodeArray, counter);
   }
-  
-  nodeArray[0] = NULL;
-  
-  //Putting the number into a node and the node into an array of nodes
-  for(int i = 0; i < counter; i++) {
-    Node* newNode = new Node(numbers[i]);
-    nodeArray[i + 1] = newNode;
+  else if() {
+
   }
-  
-  treeBuild(head, nodeArray, counter);
-  printTree(head, 0);
-  remove(head, nodeArray, counter); 
+  else {
+    cout << "That wasn't an option" << endl;
+  }
   
   return 0;
 }
@@ -98,7 +106,10 @@ void remove(Node* head, Node* nodeArray[200], int counter) {
     nodeArray[counter]->setNum(temp);
     cout << nodeArray[counter]->getNum() << endl;
     delete nodeArray[counter];
-    if(nodeArray[counter]->getParent()->getLeft() == nodeArray[counter]) {
+    if(nodeArray[counter]->getParent() == NULL) {
+      head == NULL;
+    }
+    else if(nodeArray[counter]->getParent()->getLeft() == nodeArray[counter]) {
       nodeArray[counter]->getParent()->setLeft(NULL);
     }
     else if(nodeArray[counter]->getParent()->getRight() == nodeArray[counter]) {
