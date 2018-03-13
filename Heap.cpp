@@ -4,6 +4,7 @@
 #include <cstring>
 #include <cmath>
 #include <stdio.h>
+#include <fstream>
 
 using namespace std;
 
@@ -11,19 +12,23 @@ void treeBuild(Node* &head, Node* nodeArray[100], int counter);
 void swap(Node* node1, Node* node2, Node* head);
 void remove(Node* head, Node* nodeArray[200], int counter);
 void printTree(Node* head, int space);
+void swap(Node* current);
 
 int main() {
   Node* nodeArray[100];  
-  char input[200];
+  //char input[200];
   char answer[20];
   int* numbers = new int[200];
   int counter = 0;
   Node* head = new Node(NULL);
-  
-  cout << "Would you like to input numbers via 'file', or 'manually'?" << endl;
-  cin.get(answer, 20);
 
+  cout << "Would you like to input numbers 'manually' or input from a 'file'?" << endl;
+  cin.getline(answer, 20);
+  
   if(strcmp(answer, "manually") == 0) {
+    cout << "Input up to 100 numbers with spaces in between each number" << endl;
+    char input[200];
+    cin.getline(input, 200);
     //Putting the numbers in an int array
     for(int i = 0; i < strlen(input); i++) {
       int start = i;
@@ -40,21 +45,54 @@ int main() {
       counter++;
     }
     nodeArray[0] = NULL;
-
     //Putting the number into a node and the node into an array of nodes
     for(int i = 0; i < counter; i++) {
       Node* newNode = new Node(numbers[i]);
-      counter++;
+      nodeArray[i + 1] = newNode;
     }
     treeBuild(head, nodeArray, counter);
     printTree(head, 0);
+    cout << "" << endl;
     remove(head, nodeArray, counter);
   }
-  else if() {
-
+  else if(strcmp(answer, "file") == 0) {
+    cout << "What is the name of the file you wish to read in from (be sure to add the .txt)" << endl;
+    char fileName[100];
+    cin >> fileName;
+    char input[200];
+    ifstream myFile(fileName);
+    if(myFile.is_open()) {
+      myFile.getline(input, 200);
+      myFile.close();
+      for(int i = 0; i < strlen(input); i++) {
+	int start = i;
+	int length = 1;
+	while(input[i + 1] != char(32) && i < strlen(input)) {
+	  length++;
+	  i++;
+	}
+	char* charNum = new char[length];
+	for(int j = 0; j < length; j++) {
+	  charNum[j] = input[start + j];
+	}
+	numbers[counter] = atoi(charNum);
+	counter++;
+      }
+      nodeArray[0] = NULL;
+      for(int i = 0; i < counter; i++) {
+	Node* newNode = new Node(numbers[i]);
+	nodeArray[i + 1] = newNode;
+      }
+      treeBuild(head, nodeArray, counter);
+      printTree(head, 0);
+      remove(head, nodeArray, counter);
+    }
+    else {
+     cout << "Unable to load file" << endl;
+    }
   }
   else {
-    cout << "That wasn't an option" << endl;
+    cout << "That wasn't one of the options" << endl;
   }
   
   return 0;
@@ -97,14 +135,13 @@ void swap(Node* node1, Node* node2, Node* head) {
 
 //Use the array length to find the most recent node added. Then just subtract one
 void remove(Node* head, Node* nodeArray[200], int counter) {
-  //int array[counter];
+  Node* current = head;
   counter = counter;
   for(counter; counter > 0; counter--) {
     int temp = head->getNum();
-    // cout << "Test 0" << endl;
     head->setNum(nodeArray[counter]->getNum());
     nodeArray[counter]->setNum(temp);
-    cout << nodeArray[counter]->getNum() << endl;
+    //cout << nodeArray[counter]->getNum() << " ";
     delete nodeArray[counter];
     if(nodeArray[counter]->getParent() == NULL) {
       head == NULL;
@@ -124,6 +161,8 @@ void remove(Node* head, Node* nodeArray[200], int counter) {
         int temp = head->getNum();
         head->setNum(head->getLeft()->getNum());
         head->getLeft()->setNum(temp);
+	current = head->getLeft();
+        swap(current);
       }
     }
     else if(head->getLeft()->getNum() > head->getRight()->getNum() ||
@@ -132,6 +171,8 @@ void remove(Node* head, Node* nodeArray[200], int counter) {
 	int temp = head->getNum();
 	head->setNum(head->getLeft()->getNum());
 	head->getLeft()->setNum(temp);
+	current = head->getLeft();
+	swap(current);
       }
     }
     else if(head->getRight()->getNum() > head->getLeft()->getNum()) {
@@ -139,6 +180,8 @@ void remove(Node* head, Node* nodeArray[200], int counter) {
 	int temp = head->getNum();
 	head->setNum(head->getRight()->getNum());
 	head->getRight()->setNum(temp);
+	current = head->getLeft();
+	swap(current);
       }
     }
   }  
@@ -157,4 +200,37 @@ void printTree(Node* head, int space) {
   }
    printf("%d\n", head->getNum());
   printTree(head->getLeft(), space);
+}
+
+void swap(Node* current) {
+  while(current->getLeft() != NULL && current->getRight() != NULL) {
+    if(current->getLeft()->getNum() > current->getRight()->getNum()
+       || current->getLeft()->getNum() == current->getRight()->getNum()) {
+      cout << "Before swap" << endl;
+      cout << "Current: " << current->getNum() << endl;
+      cout << "Other: " << current->getLeft()->getNum() << endl;
+      int temp2 = current->getNum();
+      current->setNum(current->getLeft()->getNum());
+      current->getLeft()->setNum(temp2);
+      cout << "After swap" << endl;
+      cout << "Current: " << current->getNum() << endl;
+      cout << "Other: "<< current->getLeft()->getNum() << endl;
+      current = current->getLeft();
+    }
+    else if(current->getRight()->getNum() > current->getLeft()->getNum()) {
+      cout << "Before swap" << endl;
+      cout << "Current: " << current->getNum() << endl;
+      cout << "Other: "<< current->getRight()->getNum() << endl;
+      int temp2 =current->getNum();
+      current->setNum(current->getRight()->getNum());
+      current->getRight()->setNum(temp2);
+      cout << "After swap" << endl;
+      cout << "Current: " << current->getNum() << endl;
+      cout << "Other: "<< current->getRight()->getNum() << endl;
+      current = current->getRight();
+    }
+    else {
+      break;
+    }
+  }
 }
