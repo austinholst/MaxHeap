@@ -141,7 +141,7 @@ void remove(Node* head, Node* nodeArray[200], int counter) {
     int temp = head->getNum();
     head->setNum(nodeArray[counter]->getNum());
     nodeArray[counter]->setNum(temp);
-    //cout << nodeArray[counter]->getNum() << " ";
+    cout << nodeArray[counter]->getNum() << " ";
     delete nodeArray[counter];
     if(nodeArray[counter]->getParent() == NULL) {
       head == NULL;
@@ -180,7 +180,7 @@ void remove(Node* head, Node* nodeArray[200], int counter) {
 	int temp = head->getNum();
 	head->setNum(head->getRight()->getNum());
 	head->getRight()->setNum(temp);
-	current = head->getLeft();
+	current = head->getRight();
 	swap(current);
       }
     }
@@ -206,27 +206,15 @@ void swap(Node* current) {
   while(current->getLeft() != NULL && current->getRight() != NULL) {
     if(current->getLeft()->getNum() > current->getRight()->getNum()
        || current->getLeft()->getNum() == current->getRight()->getNum()) {
-      cout << "Before swap" << endl;
-      cout << "Current: " << current->getNum() << endl;
-      cout << "Other: " << current->getLeft()->getNum() << endl;
       int temp2 = current->getNum();
       current->setNum(current->getLeft()->getNum());
       current->getLeft()->setNum(temp2);
-      cout << "After swap" << endl;
-      cout << "Current: " << current->getNum() << endl;
-      cout << "Other: "<< current->getLeft()->getNum() << endl;
       current = current->getLeft();
     }
     else if(current->getRight()->getNum() > current->getLeft()->getNum()) {
-      cout << "Before swap" << endl;
-      cout << "Current: " << current->getNum() << endl;
-      cout << "Other: "<< current->getRight()->getNum() << endl;
       int temp2 =current->getNum();
       current->setNum(current->getRight()->getNum());
       current->getRight()->setNum(temp2);
-      cout << "After swap" << endl;
-      cout << "Current: " << current->getNum() << endl;
-      cout << "Other: "<< current->getRight()->getNum() << endl;
       current = current->getRight();
     }
     else {
