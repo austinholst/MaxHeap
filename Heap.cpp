@@ -148,7 +148,7 @@ void Heapify(Node* node1, Node* node2, Node* head) {
     node1->setNum(temp);
     //If the node is not the head, keep on going
     if(node1->getNum() != head->getNum()) {
-      swap(node1->getParent(), node2->getParent(), head);
+      Heapify(node1->getParent(), node2->getParent(), head);
     }
   }
 }
